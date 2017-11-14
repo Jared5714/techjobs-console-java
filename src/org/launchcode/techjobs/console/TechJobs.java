@@ -1,8 +1,5 @@
 package org.launchcode.techjobs.console;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -12,7 +9,7 @@ public class TechJobs {
     private static Scanner in = new Scanner(System.in);
 
     public static void main (String[] args) {
-
+        //main application
         // Initialize our field map with key/name pairs
         HashMap<String, String> columnChoices = new HashMap<>();
         columnChoices.put("core competency", "Skill");
@@ -39,15 +36,22 @@ public class TechJobs {
 
                 if (columnChoice.equals("all")) {
                     printJobs(JobData.findAll());
+
                 } else {
 
                     ArrayList<String> results = JobData.findAll(columnChoice);
 
                     System.out.println("\n*** All " + columnChoices.get(columnChoice) + " Values ***");
 
+                    // public static final Comparator <String> CASE_INSENSITIVE_ORDER
+                    Collections.sort(results, String.CASE_INSENSITIVE_ORDER);
+
                     // Print list of skills, employers, etc
                     for (String item : results) {
                         System.out.println(item);
+                    }
+                    if (results.isEmpty()) {
+                        System.out.println("no match found");
                     }
                 }
 
@@ -61,8 +65,23 @@ public class TechJobs {
                 String searchTerm = in.nextLine();
 
                 if (searchField.equals("all")) {
-                    System.out.println("Search all fields not yet implemented.");
-                } else {
+
+                    // load a list of jobs containing the specified search term to see if it is empty
+                    ArrayList<HashMap<String, String>> jobList = JobData.findByValue(searchTerm);
+
+                    printJobs(JobData.findByValue(searchTerm));}
+                //System.out.println("Search all fields not yet implemented.");
+
+
+                else {
+
+                    // load a list of jobs containing the specified search term to see if it is empty
+                    ArrayList<HashMap<String, String>> jobList = JobData.findByColumnAndValue(searchField, searchTerm);
+
+                    if (jobList.isEmpty()) {
+                        System.out.println("No matches found");
+                    }
+
                     printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
                 }
             }
@@ -71,7 +90,7 @@ public class TechJobs {
 
     // ﻿Returns the key of the selected item from the choices Dictionary
     private static String getUserSelection(String menuHeader, HashMap<String, String> choices) {
-
+        //the second method, a utility method that displays a menu of choices and returns the users selection
         Integer choiceIdx;
         Boolean validChoice = false;
         String[] choiceKeys = new String[choices.size()];
@@ -108,9 +127,18 @@ public class TechJobs {
         return choiceKeys[choiceIdx];
     }
 
-    // Print a list of jobs
+    // Print a list of jobs formatted with ***** enclosing each entry and an empty line between each entry
     private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
+        //the last method, this methods prints the jobs to the console
+        for (HashMap<String, String> job : someJobs){
+            System.out.println("***");
 
-        System.out.println("printJobs is not implemented yet");
+            for (Map.Entry<String, String> value : job.entrySet()) {
+                System.out.println(value.getKey() + ": " + value.getValue());
+            }
+            {System.out.println("***");
+                System.out.println( );
+            }
+        }
     }
 }
